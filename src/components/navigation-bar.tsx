@@ -6,7 +6,7 @@ import navPic4 from '@/public/icons/nav-icon-4.png'
 
 export default function NavigationBarComponent({ onClick }) {
     return (
-        <div className="grid grid-cols-4 h-[80px] w-full bg-white absolute bottom-0 content-center z-[999]">
+        <div className="grid grid-cols-4 h-[80px] w-full bg-white fixed bottom-0 content-center z-[999]">
             <div onClick={ () => onClick('inbox') }>
                 <Image src={navPic1} alt={'alt'} width="24" height="24" className='m-auto' />
                 <div className='text-center'>Message</div>

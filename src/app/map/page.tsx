@@ -249,10 +249,11 @@ export default function DanceConnectComponent() {
           const u = users.find((u) => u.name == user.name)
           setSelectedUser(u || null)
         }} />}
+
+        <NavigationBarComponent onClick={navigationCb} />
       </main>
 
 
-      <NavigationBarComponent onClick={navigationCb} />
     </div>
   )
 }
