@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Image from "next/image";
 import { Heart } from 'lucide-react'
 import { Button } from "./ui/button";

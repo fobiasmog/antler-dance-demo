@@ -1,7 +1,7 @@
 // @ts-nocheck
 'use client'
 
-import { useRef, useEffect, useState, act } from 'react'
+import { useRef, useEffect, useState, act, lazy } from 'react'
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -18,13 +18,21 @@ import { MapPin, MessageCircle, Settings, LogOut, X, Send, ChevronLeft } from 'l
 import NavigationBarComponent from '@/components/navigation-bar'
 import Filter from '@/components/filter'
 import mapImage from '@/public/map.png'
-import MapComponent from '@/components/map'
+// import MapComponent from '@/components/map'
 import avatar1 from '@/public/avatars/avatar1.png'
 import avatar2 from '@/public/avatars/avatar2.png'
 import avatar3 from '@/public/avatars/avatar3.png'
 
 import UserShortInfoComponent from '@/components/user-short-info'
 import UserInfo from '@/components/user-info'
+
+// const MapComponent = lazy(() => import('@/components/client-map'));
+
+import dynamic from 'next/dynamic'
+const MapComponent = dynamic(() => import('../../components/client-map'), {
+  ssr: false,
+})
+// console.log(MapComponent)
 
 type User = {
   id: number
@@ -43,13 +51,11 @@ type ChatMessage = {
 }
 
 export default function DanceConnectComponent() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [chatsOpen, setChatsOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [chats, setChats] = useState<{ [key: number]: ChatMessage[] }>({})
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0)
   const [user, setUser] = useState<any | null>(null)
   const [fullsizeUser, setFullsizeUser] = useState(false)
 
@@ -72,126 +78,8 @@ export default function DanceConnectComponent() {
     }
     setChats(mockChats)
 
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {}
   }, [])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const image = new Image();
-    image.src = mapImage.src; // Replace with your image path
-    let offsetX = 0;
-    let offsetY = 0;
-    let isDragging = false;
-    let startX, startY;
-
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight - 64
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = '#f0f0f0'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    image.onload = () => {
-        drawImage();
-    };
-
-    function drawImage() {
-        console.log(mapImage.width, mapImage.height, canvas.width, canvas.height, offsetX, offsetY)
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, offsetX, offsetY, image.width/2, image.height/2);
-
-        users.forEach(user => {
-          ctx.beginPath()
-          ctx.arc(user.x, user.y, 20, 0, 2 * Math.PI)
-          ctx.fillStyle = user.type === 'user' ? '#4CAF50' : '#2196F3'
-          ctx.fill()
-          ctx.fillStyle = '#ffffff'
-          ctx.font = '12px Arial'
-          ctx.textAlign = 'center'
-          ctx.fillText(user.name.charAt(0), user.x, user.y + 4)
-        })
-    }
-
-    canvas.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.offsetX - offsetX;
-      startY = e.offsetY - offsetY;
-  });
-
-  canvas.addEventListener('mouseup', () => {
-      isDragging = false;
-  });
-
-  canvas.addEventListener('mousemove', (e) => {
-      if (isDragging) {
-          offsetX = e.offsetX - startX;
-          offsetY = e.offsetY - startY;
-          // Prevent dragging out of bounds
-          offsetX = Math.min(0, Math.max(offsetX, canvas.width - image.width));
-          offsetY = Math.min(0, Math.max(offsetY, canvas.height - image.height));
-          drawImage();
-      }
-  });
-
-  // Optional: For touch devices
-  canvas.addEventListener('touchstart', (e) => {
-      isDragging = true;
-      startX = e.touches[0].clientX - offsetX;
-      startY = e.touches[0].clientY - offsetY;
-  });
-
-  canvas.addEventListener('touchend', () => {
-      isDragging = false;
-  });
-
-  canvas.addEventListener('touchmove', (e) => {
-      if (isDragging) {
-          offsetX = e.touches[0].clientX - startX;
-          offsetY = e.touches[0].clientY - startY;
-          offsetX = Math.min(0, Math.max(offsetX, canvas.width - image.width));
-          offsetY = Math.min(0, Math.max(offsetY, canvas.height - image.height));
-          drawImage();
-          e.preventDefault(); // Prevent scrolling
-      }
-  });
-
-    // users.forEach(user => {
-    //   ctx.beginPath()
-    //   ctx.arc(user.x, user.y, 20, 0, 2 * Math.PI)
-    //   ctx.fillStyle = user.type === 'user' ? '#4CAF50' : '#2196F3'
-    //   ctx.fill()
-    //   ctx.fillStyle = '#ffffff'
-    //   ctx.font = '12px Arial'
-    //   ctx.textAlign = 'center'
-    //   ctx.fillText(user.name.charAt(0), user.x, user.y + 4)
-    // })
-  }, [users, windowWidth])
-
-  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const rect = canvas.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
-
-    const clickedUser = users.find(user =>
-      Math.sqrt(Math.pow(user.x - x, 2) + Math.pow(user.y - y, 2)) < 20
-    )
-
-    if (clickedUser) {
-      setSelectedUser(clickedUser)
-      setChatsOpen(true)
-    }
-  }
 
   const handleSendMessage = () => {
     if (selectedUser && message.trim()) {
@@ -267,7 +155,7 @@ export default function DanceConnectComponent() {
         <Filter />
 
         {chatsOpen && (
-          <div className="z-[99999] top-0 left-0 fixed inset-y-16 right-0 bg-background z-40 flex flex-col border-border" style={{ width: windowWidth > 700 ? '400px' : '100%' }}>
+          <div className="z-[99999] top-0 left-0 fixed inset-y-16 right-0 bg-background z-40 flex flex-col border-border">
             { !selectedUser && <div className="bg-[#FF6F3C] text-primary-foreground p-4 flex justify-between items-center">
               <h2 className="text-xl font-bold">Chats</h2>
               <Button variant="ghost" size="icon" onClick={() => {
@@ -344,7 +232,6 @@ export default function DanceConnectComponent() {
             </div>
           </div>
         )}
-
         <MapComponent markers={markers}
           onSelect={(index, markerEl) => {
             if (index == null) {

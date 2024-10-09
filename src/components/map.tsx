@@ -1,3 +1,7 @@
+// @ts-nocheck
+
+'use client';
+
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -19,7 +23,6 @@ export default function MapComponent({ onSelect, markers }) {
 
     return (
         <MapContainer center={position} zoom={15} zoomControl={false} style={{ height: '100vh', width: '100%' }}>
-            <div className='koko'></div>
         <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             className="monochrome-map"
@@ -33,8 +36,6 @@ export default function MapComponent({ onSelect, markers }) {
                     },
                     popupclose: (e) => {
                         onSelect(null, e.target.getElement())
-
-                        // e.target.getElement().classList.remove('border-2', 'border-orange-500')
                     }
                 }}>
                 <Popup className='opacity-0'>{marker.popupText}</Popup>
