@@ -10,11 +10,11 @@ export default function UserInfo({user, onChat}) {
             background: 'url('+ user.image + ')',
             backgroundSize: 'cover'
         }}>
-            <Image src={user.image} alt='' width={300} height={300} className="m-auto"/>
+            <Image src={user.image} alt='' width={200} height={200} className="m-auto opacity-0"/>
         </div>
         <div className="bg-[#FFE7DF] text-center">{user.title}</div>
 
-        <div className="p-3 flex-grow">
+        <div className="p-3 flex-grow overflow-scroll">
             <div className='flex items-center gap-2'>
                 <div className='font-semibold text-2xl'>{user.name}</div>
                 <div className="flex-grow"> </div>
@@ -76,7 +76,7 @@ export default function UserInfo({user, onChat}) {
                 </div>
             </div>
 
-            <div className="mt-8 flex gap-2">
+            <div className="mt-8 flex gap-2 mb-[80px]">
                 <Button className="bg-[#FF6F3C] text-white h-[54px] flex-grow text-lg" onClick={() => onChat(user)}>Send a message</Button>
                 <Button className="bg-[#FF6F3C] hover:bg-[#FF6F3C] text-white h-[54px] w-[54px]">
                     <Heart className='w-6 h-6 stroke-white' onClick={(e) => e.target.classList.add('fill-white')} />

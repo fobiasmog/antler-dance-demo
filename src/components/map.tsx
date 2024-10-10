@@ -22,7 +22,7 @@ export default function MapComponent({ onSelect, markers }) {
     const position = [51.51, -0.08]; // Center position of the map
 
     return (
-        <MapContainer center={position} zoom={15} zoomControl={false} style={{ height: '100vh', width: '100%' }}>
+        <MapContainer center={position} zoom={15} zoomControl={false} style={{ height: '100%', width: '100%' }}>
         <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             className="monochrome-map"

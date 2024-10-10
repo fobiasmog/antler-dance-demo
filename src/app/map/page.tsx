@@ -151,7 +151,7 @@ export default function DanceConnectComponent() {
   return (
     <div className="flex flex-col h-screen">
 
-      <main className="flex-grow relative flex">
+      <main className="flex-grow relative flex overflow-hidden">
         <Filter />
 
         {chatsOpen && (
@@ -250,9 +250,9 @@ export default function DanceConnectComponent() {
           setSelectedUser(u || null)
         }} />}
 
-        <NavigationBarComponent onClick={navigationCb} />
       </main>
 
+      <NavigationBarComponent onClick={navigationCb} />
 
     </div>
   )

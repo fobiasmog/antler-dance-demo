@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function UserShortInfoComponent({ user, onSelect }) {
     return (
-        <div className="w-full p-2 absolute bottom-[80px] z-[999]">
+        <div className="w-full p-2 absolute bottom-[80px] z-[998]">
             <div className='bg-white rounded-xl p-5 flex gap-5' onClick={() => onSelect(user)}>
                 <Image src={user.image} alt={'alt'} width={74} height={74} className='rounded-full h-[74px]' />
                 <div className="flex flex-grow flex-col">
