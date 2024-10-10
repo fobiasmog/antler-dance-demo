@@ -12,6 +12,7 @@ export default function UserInfo({user, onChat}) {
         }}>
             <Image src={user.image} alt='' width={200} height={200} className="m-auto opacity-0"/>
         </div>
+
         <div className="bg-[#FFE7DF] text-center">{user.title}</div>
 
         <div className="p-3 flex-grow overflow-scroll">
